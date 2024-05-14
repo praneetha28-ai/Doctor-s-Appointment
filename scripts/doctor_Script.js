@@ -1,6 +1,25 @@
 //Parse In
+var patientLogin = sessionStorage.getItem("pat_login");
+var confirmedDate;
+var confirmedTime;
+var confirmeddoctorID;
+var confirmedDoctorName;
+var patientNumber = ""; 
+var patientName = "";
+//make list
 
-
+if(patientLogin)
+  {
+    document.getElementById("patientLoginButton").innerHTML = "";
+    patientName = sessionStorage.getItem("name");
+    patientNumber = sessionStorage.getItem("phn_number");
+    var patientAvtar = document.createElement("button")
+    patientAvtar.innerText = sessionStorage.getItem("name");
+    patientAvtar.classList.add("btn");
+    patientAvtar.style.color = "white";
+    patientAvtar.setAttribute("onclick",'openPatientPage()');
+    document.getElementById("patientLoginButton").appendChild(patientAvtar);
+  }
 var doc_Depts = {"101":"General Physician","102":"Dentist","103":"Dermatologist","104":"ENT Specialist","105":"Homeopathy","106":"Ayurveda"};
 
 var parseIn = function (date_time) {
@@ -10,14 +29,14 @@ var parseIn = function (date_time) {
   d.setMinutes(date_time.substring(14, 16));
   return d;
 };
-var confirmedDate;
-var confirmedTime;
-var confirmeddoctorID;
-var confirmedDoctorName;
-var patientNumber; 
-var patientName;
-//make list
-var getTimeIntervals = function (time1, time2) {
+
+function openPatientPage()
+{
+  console.log("patient page");
+  window.location.href = "./patient_page.html";
+}
+var getTimeIntervals = function (time1, time2) 
+{
   var arr = [];
   while (time1 < time2) 
     {
@@ -120,9 +139,9 @@ function confirmAppointment()
               <label for="finalSlot">Time Slot</label>
               <input type="text" name="finalSlot" value="${confirmedTime}" style="border:0" id="finalSlot" readonly><br>
               <label for="patName">Patient Name</label>
-              <input  required type="text" name="patName" id="patName" onkeyup="saveName()"><br>
+              <input  required type="text" name="patName" value="${patientName}" id="patName" onkeyup="saveName()"><br>
               <label for="patNum">Phone Number</label>
-              <input required type="text" name="patNum" id="patNum" onkeyup="saveNumber()"><br>
+              <input required type="text" name="patNum" id="patNum" value="${patientNumber}" onkeyup="saveNumber()"><br>
               `,
               preConfirm: () => {
                 console.log("heyy");

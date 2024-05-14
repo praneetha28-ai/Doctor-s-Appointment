@@ -34,7 +34,11 @@
        
     <?php 
         include('database.php');
-        $sql = "SELECT * FROM `appointments` ORDER BY date DESC ,slot DESC";
+        $sql = "SELECT appointments.*, doctors.doctor_name
+        FROM appointments
+        JOIN doctors ON appointments.doctor_id = doctors.doctor_id
+        ORDER BY appointments.date DESC, appointments.slot DESC;
+        ";
         $run = mysqli_query($conn,$sql);
         if(mysqli_num_rows($run)>0)
         {
@@ -58,15 +62,15 @@
                 echo '<div class="card mx-auto" style="width: 38rem;margin: 15px;background-color: rgb(233, 233, 233);">';
                 echo '   <div class="card-body">';
                 echo'        <div style="display: flex;justify-content: space-between;align-items: center;align-content: center;">';
-                echo'            <h5 class="card-title" style="text-align: center;margin-top: 10px;">Dr.'.$row["doctor_id"].'</h5>';
+                echo'            <h5 class="card-title" style="text-align: center;margin-top: 10px;">Dr.'.$row["doctor_name"].'</h5>';
                 echo'            <div style="display: flex;align-items: center;">';
-                echo'                <img src="steth.png" alt="" width="25px" height="25px">';
+                echo'                <img src="../assets/steth.png" alt="" width="25px" height="25px">';
                 echo'                <h6 class="card-subtitle mt-1 text-muted">Dentist</h6>';
                 echo'            </div>';
                 echo'        </div>';
                 echo'        <br>';
 
-                echo'        <p class="card-text">Dr.'.$row["doctor_id"].' is having an appointment with '. $row["patient_name"].' on <b>'.$row["date"].'</b> at <b>'.$row["slot"].'</b></p>';       
+                echo'        <p class="card-text">Dr.'.$row["doctor_name"].' is having an appointment with '. $row["patient_name"].' on <b>'.$row["date"].'</b> at <b>'.$row["slot"].'</b></p>';       
                 echo'    </div>';
                 echo '</div> ';
             }

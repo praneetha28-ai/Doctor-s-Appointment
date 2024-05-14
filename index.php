@@ -152,12 +152,12 @@
             <ul class="nav justify-content-end">
                 <li class="nav-item">
                     <div style="display: flex;justify-content: center;margin: 15px;background-color:#1e128b;border-radius: 8px;color: white">
-                        <a class="nav-link" href="index.php" style="color: white;">Login As Doctor</a>
+                        <a class="nav-link" href="html_pages/doctorLogin.html" style="color: white;">Login As Doctor</a>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <div style="display: flex;justify-content: center;margin: 15px;background-color:#1e128b;border-radius: 8px;color: white">
-                    <a class="nav-link" href="index.php" style="color: white;">Register Here</a>
+                    <div style="display: flex;justify-content: center;margin: 15px;background-color:#1e128b;border-radius: 8px;color: white" id="patientLoginButton">
+                    <a class="nav-link" href="html_pages/patient_registration.html"  style="color: white;">Login As Patient</a>
                     </div>
                 </li>
             </ul>
@@ -179,7 +179,6 @@
                             <h4 class="card-title" style="margin-bottom: 3px;">with</h4>
                             <h2 class="card-title" style="font-weight: 800;font-size: 40px;">Us</h2>
                         </div>
-                        
                     </div>
                 </div>
                 <div class="col-md-4 align-self-center">

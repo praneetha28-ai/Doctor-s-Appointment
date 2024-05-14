@@ -1,6 +1,101 @@
 <?php 
     include("database.php");
 
+    if(isset($_POST["patientApplications"]))
+    {
+        $patientNumber = $_POST["patientNumber"];
+        $sql ="SELECT appointments.doctor_id, appointments.date, appointments.slot, appointments.patient_id, appointments.patient_name, doctors.doctor_name 
+        FROM appointments 
+        JOIN doctors ON appointments.doctor_id = doctors.doctor_id 
+        WHERE appointments.patient_id = '{$patientNumber}' 
+        ORDER BY appointments.date DESC, appointments.slot DESC;";
+        $run = mysqli_query($conn,$sql);
+        // echo $sql;
+        $appointmentLists = array();
+        if(mysqli_num_rows($run)>0)
+        {
+            while($row = mysqli_fetch_assoc($run))
+            {
+                $appointmentLists[] = array($row);
+            }
+            echo json_encode($appointmentLists);
+        }
+        else
+        {
+            echo 0;
+        }
+    }
+    if(isset($_POST["patientLogin"]))
+    {
+        $patientNumber = $_POST["patientNumber"];
+        $patientPassword = $_POST["patientPassword"];
+
+        $sql = "SELECT * FROM patients where patient_number='{$patientNumber}'";
+        $run =mysqli_query($conn,$sql);
+        if(mysqli_num_rows($run)>0)
+        {
+            $row = mysqli_fetch_assoc($run);
+            $verify = password_verify($patientPassword,$row["patient_password"]);
+            if($verify)
+            {
+                
+                echo json_encode($row);
+            }
+            else
+            {
+                echo "Invalid password";
+            }
+        }
+        else 
+        {
+            echo "Please register to login";
+        }
+    }
+    if(isset($_POST["patientRegister"]))
+    {
+        $patientName = $_POST["patientName"];
+        $patientAge = $_POST["patientAge"];
+        $patientNumber = $_POST["patientNumber"];
+        $patientPassword = $_POST["patientPassword"];
+        $patientPassword = password_hash($patientPassword,PASSWORD_DEFAULT);
+        $sql = "INSERT INTO `patients`(`patient_name`, `patient_number`, `patient_password`, `patient_age`) VALUES ('{$patientName}','{$patientNumber}','{$patientPassword}','{$patientAge}')";
+        $run = mysqli_query($conn,$sql);
+        echo header("Location :index.php");
+    }
+    if(isset($_POST["loginDoctor"]))
+    {
+        $doctorID = $_POST["inputID"];
+        $password = $_POST["inputPassword"];
+        $sql = "SELECT doctor_id,password from doctors where doctor_id='{$doctorID}'";
+        $run = mysqli_query($conn,$sql);
+        if(mysqli_num_rows($run)>0) 
+        {
+            $row = mysqli_fetch_assoc($run);
+            if($row["password"]==null)
+            {
+                $hashPaswd = password_hash($password,PASSWORD_DEFAULT);
+                $updateSql = "UPDATE doctors set password ='{$hashPaswd}' where doctor_id='{$doctorID}'";
+                $queryExec = mysqli_query($conn,$updateSql);
+
+            }
+            else
+            {
+                $verify = password_verify($password,$row["password"]);
+                if($verify)
+                {
+                    echo header("Location: doctor_appointments.php?docId="."'{$doctorID}'");
+                }
+                else
+                {
+                    echo "invalid password";
+                }
+            }
+        }
+        else 
+        {
+            echo "Invalid id";
+        }
+    }
     if(isset($_POST["updateEdittime"]))
     {
         $doctor_ID = $_POST["doctor_id"];

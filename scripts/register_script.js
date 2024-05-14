@@ -8,7 +8,7 @@ var xhttp = new XMLHttpRequest();
     optionButton.addEventListener("click",function(){
         var departmentDropDown = document.getElementById("identifierList");
         console.log("clicked")
-        xhttp.open("POST","doctors.php",true);
+        xhttp.open("POST","../php_pages/doctors.php",true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("departmentList=1");
         xhttp.onreadystatechange=function(){
