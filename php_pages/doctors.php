@@ -1,13 +1,59 @@
 <?php 
     include("database.php");
-
+    if(isset($_POST["consult"]))
+    {
+        $appointmentId = $_POST["appId"];
+        $sql = "UPDATE appointments set consultation=1 where id={$appointmentId}";
+        $run = mysqli_query($conn,$sql);
+        echo "success";
+    }
+    if(isset($_POST["updatePatApt"]))
+    {
+        $appointmentId = $_POST["app_id"];
+        $newDate = $_POST["newDate"];
+        $newTime = $_POST["newslot"];
+        $sql = "UPDATE `appointments` SET `date`='{$newDate}',`slot`='{$newTime}' WHERE id={$appointmentId}";
+        $run = mysqli_query($conn,$sql);
+        
+    }
+    if(isset($_POST["deleteAppointment"]))
+    {
+        $appointmentId= $_POST["appointmentId"];
+        $sql = "DELETE FROM `appointments` WHERE id={$appointmentId}";
+        $run = mysqli_query($conn,$sql);
+        echo "true";
+    }
+    if(isset($_POST["patientPastApplications"]))
+    {
+        $patientNumber = $_POST["patientNumber"];
+        $sql ="SELECT appointments.id,appointments.doctor_id, appointments.date, appointments.slot, appointments.patient_id, appointments.patient_name, doctors.doctor_name 
+        FROM appointments 
+        JOIN doctors ON appointments.doctor_id = doctors.doctor_id 
+        WHERE appointments.patient_id = '{$patientNumber}' and appointments.consultation=1 
+        ORDER BY appointments.date DESC, appointments.slot DESC;";
+        $run = mysqli_query($conn,$sql);
+        // echo $sql;
+        $appointmentLists = array();
+        if(mysqli_num_rows($run)>0)
+        {
+            while($row = mysqli_fetch_assoc($run))
+            {
+                $appointmentLists[] = array($row);
+            }
+            echo json_encode($appointmentLists);
+        }
+        else
+        {
+            echo 0;
+        }
+    }
     if(isset($_POST["patientApplications"]))
     {
         $patientNumber = $_POST["patientNumber"];
-        $sql ="SELECT appointments.doctor_id, appointments.date, appointments.slot, appointments.patient_id, appointments.patient_name, doctors.doctor_name 
+        $sql ="SELECT appointments.id,appointments.doctor_id, appointments.date, appointments.slot, appointments.patient_id, appointments.patient_name, doctors.doctor_name 
         FROM appointments 
         JOIN doctors ON appointments.doctor_id = doctors.doctor_id 
-        WHERE appointments.patient_id = '{$patientNumber}' 
+        WHERE appointments.patient_id = '{$patientNumber}' and appointments.consultation=0
         ORDER BY appointments.date DESC, appointments.slot DESC;";
         $run = mysqli_query($conn,$sql);
         // echo $sql;
@@ -60,7 +106,7 @@
         $patientPassword = password_hash($patientPassword,PASSWORD_DEFAULT);
         $sql = "INSERT INTO `patients`(`patient_name`, `patient_number`, `patient_password`, `patient_age`) VALUES ('{$patientName}','{$patientNumber}','{$patientPassword}','{$patientAge}')";
         $run = mysqli_query($conn,$sql);
-        echo header("Location :index.php");
+        echo header("Location :./index.php");
     }
     if(isset($_POST["loginDoctor"]))
     {
@@ -185,7 +231,7 @@
         {
             $sql = "INSERT INTO slots ( `doctor_id`, `date`, `available_time`, `break_time`) VALUES ('{$doctor_ID}','{$selecteddate}','{$availabilityTime}','{$breaktime}')";
             $run = mysqli_query($conn,$sql);
-            header("Location: availability.html");
+            header("Location: ../html_pages/availability.html");
         }
         else 
         {

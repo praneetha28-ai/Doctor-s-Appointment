@@ -10,7 +10,16 @@
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
-    <style>
+<style>
+    .nav-link:hover{
+            border-bottom: 2px solid #1e128b;
+            color: #1e128b;
+            padding-bottom: 3px;
+            font-weight: 600;
+        }
+        .nav-link{
+            color: black;
+        }
         .dateTime{
             display: flex;
             justify-content: space-evenly;
@@ -28,7 +37,39 @@
     </style>
 </head>
 <body>
-    <h3 style="text-align: center;text-decoration: underline">Appointments</h3>
+    <div class="container-fluid">
+        <div class="navbar justify-content-space ">
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <div style="display: flex;justify-content: center;margin: 15px;">
+                        <img src="../assets/onl_doc.png" alt="" width="75px" height="75px">
+                    </div>
+                </li>
+                <li class="nav-item" style="align-self: center;">
+                    <div style="display: flex;justify-content: center;margin: 15px;color:#1e128b">
+                        <h3>DocConnect</h3>
+                    </div>
+                </li>
+            </ul>
+            <ul class="nav" style="justify-content: space-between;display: flex">
+                <!-- <li class="nav-item">
+                    <div style="display: flex;justify-content: center;margin: 15px;">
+                        <a class="nav-link" href="../index.php">Home</a>
+                    </div>
+                </li>
+                <li class="nav-item" id="activeApplications">
+                    <div style="display: flex;justify-content: center;margin: 15px;">
+                        <a class="nav-link" href="patient_page.html">My Appointments</a>
+                    </div>
+                </li> -->
+                <li>
+                    <div style="display: flex;justify-content: center;margin: 15px;">
+                        <a class="nav-link" style="background-color: #1e128b;color: white;border-radius: 5px;" href="../index.php">Home</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
     
     <div class="container-fluid text-center" >
        
@@ -76,6 +117,8 @@
             }
         }
     ?>
+     
+     </div>
     </div>
 </body>
 </html>

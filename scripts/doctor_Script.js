@@ -8,6 +8,8 @@ var patientNumber = "";
 var patientName = "";
 //make list
 
+
+
 if(patientLogin)
   {
     document.getElementById("patientLoginButton").innerHTML = "";
@@ -21,7 +23,33 @@ if(patientLogin)
     document.getElementById("patientLoginButton").appendChild(patientAvtar);
   }
 var doc_Depts = {"101":"General Physician","102":"Dentist","103":"Dermatologist","104":"ENT Specialist","105":"Homeopathy","106":"Ayurveda"};
-
+function markConsultComplete(appointmnetId)
+{
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("POST","doctors.php",true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("consult=true&appId="+appointmnetId);
+    xhttp.onreadystatechange = function()
+    {
+      if(this.readyState==4 && this.status==200)
+        {
+          var data = this.responseText;
+          if(data=="success")
+            {
+              Swal.fire("Appointment Updated successfully","","info").then((result)=>{
+                if(result.isConfirmed)
+                  {
+                    location.reload();
+                  }
+                  else 
+                  {
+                    location.reload();
+                  }
+              })
+            }
+        }
+    }
+}
 var parseIn = function (date_time) {
   console.log(date_time);
   var d = new Date();
@@ -217,6 +245,7 @@ function getAvailableSlots(doctorID,date) {
         }
       }
       console.log(finalAvailableSlots);
+      
       var timeSlotsGrid = document.getElementById("bookings");
       if(document.getElementById("time-slots") )
         {   
@@ -325,7 +354,7 @@ function createDoctorsList(data,department) {
                 info.style.display = "flex";
                 info.style.alignItems = "center";
                     var steth = document.createElement("img");
-                    steth.setAttribute("src","steth.png");
+                    steth.setAttribute("src","assets/steth.png");
                     steth.setAttribute("width","25px");
                     steth.setAttribute("height","25px");
                     var proff = document.createElement("h6");
@@ -338,7 +367,7 @@ function createDoctorsList(data,department) {
                 exp_info.style.display="flex";
                 exp_info.style.alignItems="center";
                     var exp_img = document.createElement("img");
-                    exp_img.setAttribute("src","experience.png");
+                    exp_img.setAttribute("src","assets/experience.png");
                     exp_img.setAttribute("width","25px");
                     exp_img.setAttribute("height","25px");
                     var exp_num = document.createElement("h6");

@@ -5,7 +5,7 @@ var nameButton=document.getElementById("nameButton");
 nameButton.addEventListener("click",
 function(){
     var nameDropDown=document.getElementById("nameList");
-    xhttp.open("POST","./php_pages/doctors.php",true);
+    xhttp.open("POST","../php_pages/doctors.php",true);
     xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
     xhttp.send("nameList=1");
     xhttp.onreadystatechange=function()
@@ -42,7 +42,7 @@ function(){
 function getSlotDetails(doctorID,date,callback)
 {
     
-    xhttp.open("POST","./php_pages/doctors.php",true);
+    xhttp.open("POST","../php_pages/doctors.php",true);
     xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
     xhttp.send("getSlotDetails=1&doc_id="+doctorID+"&date="+date);
     xhttp.onreadystatechange = function (){
@@ -59,7 +59,7 @@ document.getElementById("date").addEventListener('change',function(event){
     var doctorID = document.getElementById("doctor_id").value;
     var date = document.getElementById("date").value;
     console.log(doctorID);
-    xhttp.open("POST","./php_pages/doctors.php",true);
+    xhttp.open("POST","../php_pages/doctors.php",true);
     xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
     xhttp.send("checkDate="+doctorID+'&date='+date);
     xhttp.onreadystatechange = function()

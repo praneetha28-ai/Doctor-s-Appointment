@@ -118,7 +118,7 @@
         <ul class="nav justify-content-end">
                 <li class="nav-item">
                     <div style="display: flex;justify-content: center;margin: 15px;">
-                        <img src="onl_doc.png" alt="" width="75px" height="75px">
+                        <img src="assets/onl_doc.png" alt="" width="75px" height="75px">
                     </div>
                 </li>
                 <li class="nav-item" style="align-self: center;">
@@ -185,7 +185,7 @@
                     <button class="btn" style="background-color: white;width: 100%" onclick="viewSpecialists()">View All our Specialists</button>
                 </div>
                 <div class="col-md-4 align-self-start">
-                    <img class="card-img" src="medical-team.png" alt="Card image" width="100px" height="500px">
+                    <img class="card-img" src="assets/medical-team.png" alt="Card image" width="100px" height="500px">
                 </div>
             </div>
         </div>
@@ -206,7 +206,7 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <img class="card-img" src="ent.png" alt="Card image">
+                        <img class="card-img" src="assets/ent.png" alt="Card image">
                     </div>
                 </div>
             </div>
@@ -220,7 +220,7 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <img class="card-img" src="derma.png" alt="Card image">
+                        <img class="card-img" src="assets/derma.png" alt="Card image">
                     </div>
                 </div>
             </div>
@@ -235,7 +235,7 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <img class="card-img" src="general.png" alt="Card image" width="80px">
+                        <img class="card-img" src="assets/general.png" alt="Card image" width="80px">
                     </div>
                 </div>
             </div>
@@ -251,7 +251,7 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <img class="card-img" src="dentist.png" alt="Card image">
+                        <img class="card-img" src="assets/dentist.png" alt="Card image">
                     </div>
                 </div>
             </div>
@@ -265,7 +265,7 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <img class="card-img" src="homeopathy.png" alt="Card image">
+                        <img class="card-img" src="assets/homeopathy.png" alt="Card image">
                     </div>
                 </div>
             </div>
@@ -279,7 +279,7 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <img class="card-img" src="ayurveda.png" alt="Card image">
+                        <img class="card-img" src="assets/ayurveda.png" alt="Card image">
                     </div>
                 </div>
             </div>
