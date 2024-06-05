@@ -26,7 +26,11 @@
             border-radius: 10px;
             
         }
-        
+        .nav-item.active .nav-link {
+            border-bottom: 2px solid #1e128b;
+            color: #1e128b;
+            font-weight: 600;
+        }
         .nav-link:hover{
             border-bottom: 2px solid #1e128b;
             color: #1e128b;
@@ -44,7 +48,7 @@
         }
         #doctors{
             /* text-align: center; */
-            
+            text-align: center;
             margin-right: 25px;
             overflow-y: scroll;
             align-items: center;
@@ -67,8 +71,9 @@
         #time-slots {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
+            justify-content: start;
             margin-top: 10px;
+            margin-right: 5px;
         }
         #confirm{
             width: 250px;
@@ -79,13 +84,16 @@
         #myDate{
             width: 300px;
         }
-        
+        .nav-item active{
+            background-color: #1e128b;
+        }
         .time-slot-indv {
             width: calc(25% - 10px); /* Adjust width based on the number of items per row */
             margin-bottom: 10px;
             border: 1px solid #ccc;
             padding: 5px;
             box-sizing: border-box;
+            margin: 3px;
         }
         .bookings{
             text-align: center;
@@ -112,11 +120,9 @@
     </style>
 </head>
 <body>
-    <!-- 343A40 -->
-    <!-- helloo  -->
 <div class="container-fluid" >
         <div class="navbar  justify-content-space">
-        <ul class="nav justify-content-end">
+            <ul class="nav justify-content-end">
                 <li class="nav-item">
                     <div style="display: flex;justify-content: center;margin: 15px;">
                         <img src="assets/onl_doc.png" alt="" width="75px" height="75px">
@@ -129,7 +135,7 @@
                 </li>
             </ul>
             <ul class="nav justify-content-center">
-                <li class="nav-item" >
+                <li class="nav-item active">
                     <div style="display: flex;justify-content: center;margin: 15px;">
                         <a class="nav-link" href="index.php">Home</a>
                     </div>
@@ -139,14 +145,14 @@
                         <a class="nav-link" href="php_pages/appointments.php">Appointments</a>
                     </div>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <div style="display: flex;justify-content: center;margin: 15px;">
-                        <a class="nav-link" href="#">About Us</a>
+                        <a class="nav-link" href="html_pages/availability.html">Update Availability</a>
                     </div>
-                </li>
+                </li> -->
                 <li class="nav-item">
                     <div style="display: flex;justify-content: center;margin: 15px;">
-                        <a class="nav-link" href="#">Contact Us</a>
+                        <a class="nav-link" href="html_pages/add_doctors.html">Add Doctor</a>
                     </div>
                 </li>
             </ul>
@@ -196,8 +202,8 @@
         </div>
         <div class="scrollable-cards-container" id="scrollable-cards-container">
 
-        <div class="scrollable-cards-container_1" >
-            <div class="card" style="height: 150px;width: 400px;background-color:white;color:#343A40" onclick="getDoctorList(104)" id="specialist_104">
+        <div class="scrollable-cards-container_1 row" >
+            <div class="card col-md-3" style="height: 150px;width: 400px;background-color:white;color:#343A40" onclick="getDoctorList(104)" id="specialist_104">
                 <div class="row no-gutters" >
                     <div class="col-md-8">
                         <div class="card-img-overlay" style="width: 400px;">
@@ -211,7 +217,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card " style="height: 150px;width: 400px;background-color:white;color:#343A40" onclick="getDoctorList(103)" id="specialist_103">
+            <div class="card col-md-3" style="height: 150px;width: 400px;background-color:white;color:#343A40" onclick="getDoctorList(103)" id="specialist_103">
                 <div class="row no-gutters" >
                     <div class="col-md-8">
                         <div class="card-img-overlay" style="width: 400px;">
@@ -225,7 +231,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card " style="height: 150px;width: 400px;background-color:white;color:#343A40" onclick="getDoctorList(101)" id="specialist_101">
+            <div class="card col-md-3" style="height: 150px;width: 400px;background-color:white;color:#343A40" onclick="getDoctorList(101)" id="specialist_101">
                 <div class="row no-gutters" >
                     <div class="col-md-8">
                         <div class="card-img-overlay" style="width: 400px;">
@@ -241,8 +247,8 @@
                 </div>
             </div>
         </div>
-        <div class="scrollable-cards-container_1" >
-            <div class="card " style="height: 150px;width: 400px;background-color:white;color:#343A40" onclick="getDoctorList(102)" id="specialist_102">
+        <div class="scrollable-cards-container_1 row" >
+            <div class="card col-md-3" style="height: 150px;width: 400px;background-color:white;color:#343A40" onclick="getDoctorList(102)" id="specialist_102">
                 <div class="row no-gutters" >
                     <div class="col-md-8">
                         <div class="card-img-overlay" style="width: 400px;">
@@ -256,7 +262,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card " style="height: 150px;width: 400px;background-color:white;color:#343A40" onclick="getDoctorList(105)" id="specialist_105">
+            <div class="card col-md-3" style="height: 150px;width: 400px;background-color:white;color:#343A40" onclick="getDoctorList(105)" id="specialist_105">
                 <div class="row no-gutters" >
                     <div class="col-md-8">
                         <div class="card-img-overlay" style="width: 400px;">
@@ -270,7 +276,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card " style="height: 150px;width: 400px;background-color:white;color:#343A40" onclick="getDoctorList(106)" id="specialist_106">
+            <div class="card col-md-3" style="height: 150px;width: 400px;background-color:white;color:#343A40" onclick="getDoctorList(106)" id="specialist_106">
                 <div class="row no-gutters" >
                     <div class="col-md-8">
                         <div class="card-img-overlay" style="width: 400px;">
@@ -297,6 +303,6 @@
             </div>
         </div>
     </div>
-    <script src="scripts/doctor_Script.js"></script>
+    <script src="scripts/doctorScript.js"></script>
 </body>
 </html>

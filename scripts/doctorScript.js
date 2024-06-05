@@ -6,9 +6,8 @@ var confirmeddoctorID;
 var confirmedDoctorName;
 var patientNumber = ""; 
 var patientName = "";
+var chosenDepartment = "";
 //make list
-
-
 
 if(patientLogin)
   {
@@ -23,12 +22,14 @@ if(patientLogin)
     document.getElementById("patientLoginButton").appendChild(patientAvtar);
   }
 var doc_Depts = {"101":"General Physician","102":"Dentist","103":"Dermatologist","104":"ENT Specialist","105":"Homeopathy","106":"Ayurveda"};
-function markConsultComplete(appointmnetId)
+
+var timings = {"101":20,"102":30,"103":20,"104":20,"105":"20","106":20}
+function markConsultComplete(appointmnetId,status)
 {
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST","doctors.php",true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("consult=true&appId="+appointmnetId);
+    xhttp.send("consult=true&appId="+appointmnetId+"&status="+status);
     xhttp.onreadystatechange = function()
     {
       if(this.readyState==4 && this.status==200)
@@ -50,11 +51,12 @@ function markConsultComplete(appointmnetId)
         }
     }
 }
-var parseIn = function (date_time) {
+var parseIn = function (date_time,addMinutes) {
   console.log(date_time);
   var d = new Date();
   d.setHours(date_time.substring(11, 13));
   d.setMinutes(date_time.substring(14, 16));
+  // addMinutes==true?d.setMinutes(d.getMinutes()-15):"";
   return d;
 };
 
@@ -63,13 +65,13 @@ function openPatientPage()
   console.log("patient page");
   window.location.href = "./patient_page.html";
 }
-var getTimeIntervals = function (time1, time2) 
+var getTimeIntervals = function (time1, time2,timeInterval) 
 {
   var arr = [];
   while (time1 < time2) 
     {
     arr.push(time1.toTimeString().substring(0, 5));
-    time1.setMinutes(time1.getMinutes() + 15);
+    time1.setMinutes(time1.getMinutes() + timeInterval);
   }
   return arr;
 };
@@ -216,31 +218,44 @@ function getAvailableSlots(doctorID,date) {
         
       var availability = data["available"];
       var booked = data["booked"];
+      var timeInterval = parseInt(data["time_interval"]);
+      var breaks = data["breaks"];
       var date = document.createElement("h4");
-
+      var breakTime = [];
+      for(var i = 0;i<breaks.length;i++)
+      {
+          
+          var bStart = breaks[i]["breakslot"].split("-")[0];
+          var bEnd = breaks[i]["breakslot"].split("-")[1];
+          var breStart = parseIn(breaks[i]["date"]+" "+bStart);
+          var breEnd = parseIn(breaks[i]["date"]+" "+bEnd)
+          // console.log(bStart,bEnd);
+          breakTime = breakTime.concat(getTimeIntervals(breStart,breEnd,5));
+      }
       date.innerText = availability[0]["date"];
       var availableStartTime = availability[0]["available_time"].split("-")[0];
       var availableEndTime = availability[0]["available_time"].split("-")[1];
       var breakStartTime = availability[0]["break_time"].split("-")[0];
       
       var breakEndTime = availability[0]["break_time"].split("-")[1];
-      var startTime = parseIn(availability[0]["date"] + " " + availableStartTime);
-      var endTime = parseIn(availability[0]["date"] + " " + availableEndTime);
-      var breakStime = parseIn(availability[0]["date"] + " " + breakStartTime);
-      var breakEtime = parseIn(availability[0]["date"] + " " + breakEndTime);
-      var intervals = getTimeIntervals(startTime, endTime);
+      var startTime = parseIn(availability[0]["date"] + " " + availableStartTime,false);
+      var endTime = parseIn(availability[0]["date"] + " " + availableEndTime,false);
+      var breakStime = parseIn(availability[0]["date"] + " " + breakStartTime,true);
+      var breakEtime = parseIn(availability[0]["date"] + " " + breakEndTime,false);
+      var intervals = getTimeIntervals(startTime, endTime,timeInterval);
       console.log(intervals);
-      var breakTime = getTimeIntervals(breakStime, breakEtime);
-      
+      // var breakTime = getTimeIntervals(breakStime, breakEtime,5);
+      // console.log(breakTime);
       for(var i = 0;i<booked.length;i++)
-        {
-            breakTime.push(booked[i]["slot"]);
-        }
-        console.log(breakTime);
+      {
+          breakTime.push(booked[i]["slot"]);
+      }
+      console.log(breakTime);
       var finalAvailableSlots = [];
       for (var i = 0; i < intervals.length; i++) 
         {
-        if (!(breakTime.indexOf(intervals[i]) > 0)) {
+        if (!(breakTime.indexOf(intervals[i]) >= 0)) 
+          {
           finalAvailableSlots.push(intervals[i]);
         }
       }
@@ -252,17 +267,41 @@ function getAvailableSlots(doctorID,date) {
             document.getElementById("confirm").remove();
             document.getElementById("time-slots").remove();
         }
+      var currentDate = new Date();
+      console.log(currentDate.toISOString());
+      var selectedDate = new Date(availability[0]["date"]);
+      console.log(selectedDate);
       var time_slots = document.createElement("div");
       time_slots.id = "time-slots";
-      finalAvailableSlots.forEach(function (timeSlot) {
-        var timeSlotDiv = document.createElement("div");
-        timeSlotDiv.textContent = timeSlot;
-        timeSlotDiv.id = timeSlot.replace(":", "-"); // Replace ":" with "-" in the time slot to create the ID
-        timeSlotDiv.classList.add("time-slot-indv");
-        timeSlotDiv.style.backgroundColor = "aliceblue";
-        timeSlotDiv.style.borderRadius = "10px"
-        timeSlotDiv.setAttribute("onclick", "storeDateTime('" + timeSlot + "')");
-        time_slots.appendChild(timeSlotDiv);
+      finalAvailableSlots.forEach(function (timeSlot) 
+      {
+        if(currentDate.getDate()==selectedDate.getDate())
+          {
+
+            if(timeSlot > (currentDate.getHours()+":"+currentDate.getMinutes()))
+              {
+                var timeSlotDiv = document.createElement("div");
+                timeSlotDiv.textContent = timeSlot;
+                timeSlotDiv.id = timeSlot.replace(":", "-");
+                timeSlotDiv.classList.add("time-slot-indv");
+                timeSlotDiv.style.backgroundColor = "aliceblue";
+                timeSlotDiv.style.borderRadius = "10px";
+                timeSlotDiv.setAttribute("onclick", "storeDateTime('" + timeSlot + "')");
+                time_slots.appendChild(timeSlotDiv);
+              }
+          }
+        else 
+        {
+                var timeSlotDiv = document.createElement("div");
+                timeSlotDiv.textContent = timeSlot;
+                timeSlotDiv.id = timeSlot.replace(":", "-");
+                timeSlotDiv.classList.add("time-slot-indv");
+                timeSlotDiv.style.backgroundColor = "aliceblue";
+                timeSlotDiv.style.borderRadius = "10px";
+                timeSlotDiv.setAttribute("onclick", "storeDateTime('" + timeSlot + "')");
+                time_slots.appendChild(timeSlotDiv);
+        }
+        
       });
       timeSlotsGrid.append(time_slots);
       var confirmButton = document.createElement("button")
@@ -271,6 +310,9 @@ function getAvailableSlots(doctorID,date) {
       confirmButton.setAttribute("onclick","confirmAppointment()");
       confirmButton.style.backgroundColor = "#1e128b";
       confirmButton.style.color ="white";
+      confirmButton.style.borderRadius = "5px";
+      confirmButton.classList.add("btn");
+      confirmButton.style.marginTop = "5px";
       var bookingsSpace = document.getElementById("bookings");
       bookingsSpace.appendChild(confirmButton);
     }
@@ -328,15 +370,74 @@ function handleAppointmentBooking(event) {
     bookingsSpace.appendChild(doc_id);
     bookingsSpace.appendChild(dateInput);
 }
+
+function searchDoctors()
+{
+  var userSearch = document.getElementById("searchDoctor").value;
+  var docList = document.getElementById("doctors");
+  var doctorsCards = docList.getElementsByClassName("card");
+  var doctorsNames = docList.getElementsByTagName("h5");
+  for(var i = 0;i<doctorsNames.length;i++)
+    {
+        var name = doctorsNames[i].innerText;
+        // console.log(name.toLowerCase());
+        // console.log("dr. "+userSearch.toLowerCase());
+        if(name.toLowerCase().startsWith("dr. "+userSearch.toLowerCase()))
+          {
+            console.log("matched");
+            console.log(doctorsCards[i]);
+            doctorsCards[i].style.display = "";
+          }
+          else 
+          {
+            doctorsCards[i].style.display = "none";
+          }
+    }
+}
 function createDoctorsList(data,department) {
+  chosenDepartment = department;
   var section = document.getElementById("doctors");
   section.innerHTML = "";
   var subSection = document.createElement("div");
+  // subSection.style.display = "flex";
+  subSection.style.justifyContent = "space-evenly";
   var findDoc = document.createElement("h4");
   findDoc.style.marginLeft = "10px";
   findDoc.innerText = doc_Depts[department];
-  section.appendChild(findDoc);
-  for (var i = 0; i < data.length; i++) {
+
+  var searchDiv = document.createElement("div");
+  searchDiv.style.display = "flex";
+  searchDiv.style.marginLeft = "10px";
+  var searchDoc = document.createElement("input")
+  searchDoc.setAttribute("type","text");
+  searchDoc.setAttribute("id","searchDoctor");
+  searchDoc.setAttribute("placeholder","Search for doctors...");
+  searchDoc.setAttribute("onkeyup","searchDoctors()");
+  searchDoc.style.marginLeft = "10px";
+  // searchDoc.style.borderRadius = "5px";
+
+  
+  var searchButton = document.createElement("button");
+  searchButton.classList.add("btn");
+  searchButton.style.backgroundColor = "#1e128b";
+  searchButton.style.color = "white";
+  searchButton.innerText = "Search"
+ 
+
+  var searchImg = document.createElement("img");
+  searchImg.setAttribute("src","assets/search.png");
+  searchImg.setAttribute("width","25px");
+  searchImg.setAttribute("height","25px");
+
+  // searchDiv.appendChild(searchImg);
+  searchDiv.appendChild(searchDoc);
+  searchDiv.appendChild(searchButton);
+  subSection.appendChild(findDoc);
+  // subSection.appendChild(searchImg);
+  subSection.appendChild(searchDiv);
+  section.appendChild(subSection);
+  for (var i = 0; i < data.length; i++) 
+  {
     var doctorDiv = document.createElement("div");
     doctorDiv.classList.add("card");
     doctorDiv.style.width="24rem";
@@ -384,12 +485,13 @@ function createDoctorsList(data,department) {
             appointment_btn.style.backgroundColor = "#1e128b";
             appointment_btn.style.color ="white";
             appointment_btn.innerText ="Check Availability";
+            appointment_btn.style.marginTop = "8px";
             appointment_btn.setAttribute("doc_id", data[i]["doc_id"]);
             appointment_btn.setAttribute("doc_name",data[i]["doctor_name"]);
             appointment_btn.addEventListener("click", handleAppointmentBooking);
         carbody.appendChild(card_title);
         carbody.appendChild(infoOfDoc);
-        carbody.appendChild(doc_desc);
+        // carbody.appendChild(doc_desc);
         carbody.appendChild(appointment_btn);
       doctorDiv.appendChild(carbody);
     doctorDiv.setAttribute("id", "doctor");

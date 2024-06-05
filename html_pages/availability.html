@@ -10,45 +10,71 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.min.css">
 </head>
 <body>
-    <div style="margin: 20px;">
-        <form action="../php_pages/doctors.php" method="POST" id="availability_form">
-            <label for="doc_name">Name</label>
-            <input type="text" name="doc_name" id="doc_name" readonly>
-            
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" 
-                id="nameButton" 
-                style="background-color: #40a2af;border: none;color: rgb(255, 255, 255); font-family: 'Trirong', serif;" 
-                data-bs-toggle="dropdown" aria-expanded="false" value="" >
-                Select your name 
-                </button>
-                <ul class="dropdown-menu" id="nameList" style="height: 300px;overflow: scroll;">
-                    <li>
-                        <div class="input-group mb-3">
-                            <!-- <span class="input-group-text" id="basic-addon1"><img src="search.png" alt="" style="width: 20px;height: 20px;"></span> -->
-                            <input type="text" class="form-control" onkeyup="searchID()"  id="searchforId" placeholder="Search..." aria-label="Username" aria-describedby="basic-addon1">
-                        </div>
-                    </li>
-                </ul>
+    <div class="container-fluid">
+        <div class="navbar">
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <div style="display: flex;justify-content: center;margin: 15px;">
+                        <img src="../assets/onl_doc.png" alt="" width="75px" height="75px">
+                    </div>
+                </li>
+                <li class="nav-item" style="align-self: center;">
+                    <div style="display: flex;justify-content: center;margin: 15px;color:#1e128b">
+                        <h3>DocConnect</h3>
+                    </div>
+                </li>
+            </ul>
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <div style="display: flex;justify-content: center;margin: 15px;">
+                        <h4 style="color: #1e128b;"><a href="../index.php" style="text-decoration: dashed;color: #1e128b;">Home</a></h4>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="container" style="text-align: center;width: 800px;">
+        <h4>Update your Availability</h4>
+        <hr>
+        <form action="../php_pages/doctors.php" method="POST" id="availability_form" style="border:1px solid #1e128b;padding: 10px;border-radius: 10px;background-color: rgb(233, 233, 233);">
+            <input  type="text" name="doctor_id" id="doctor_id" hidden>
+            <div style="text-align: center;">
+                <label for="date">Select date</label>
+                <input required type="date" name="date" id="date"><br><br>
+            </div>
+            <div style="display: flex;justify-content: space-evenly;">
+                <div class="availableDiv">
+                    <h4>Availability time</h4> <br>
+                    <label for="av_from_time">From</label>
+                    <input required type="time" name="av_from_time" id="av_from_time">
+                    <label for="av_to_time">To</label>
+                    <input required type="time" name="av_to_time" id="av_to_time"><br><br>
+                </div>
+                <div class="breakDiv">
+                    <h4>Break time</h4> <br>
+                    <label for="bk_from_time">From</label>
+                    <input required type="time" name="bk_from_time" id="bk_from_time">
+                    <label for="bk_to_time">To</label>
+                    <input required type="time" name="bk_to_time" id="bk_to_time">
+                </div>
+                <div class="intervalDiv">
+                    <h4>Time interval</h4>
+                    <label for="timeInterval">Interval (in mins)</label><br>
+                    <input required type="number" name="timeInterval" value="15">
+                </div>
             </div><br>
-            <label for="doctor_id">ID</label>
-            <input type="text" name="doctor_id" id="doctor_id" readonly><br><br>
-            <label for="date">Select date</label>
-            <input type="date" name="date" id="date"><br><br>
-            <h4>Availability time</h4> <br>
-            <label for="av_from_time">From</label>
-            <input type="time" name="av_from_time" id="av_from_time">
-            <label for="av_to_time">To</label>
-            <input type="time" name="av_to_time" id="av_to_time"><br><br>
-            <h4>Break time</h4> <br>
-            <label for="bk_from_time">From</label>
-            <input type="time" name="bk_from_time" id="bk_from_time">
-            <label for="bk_to_time">To</label>
-            <input type="time" name="bk_to_time" id="bk_to_time"><br><br>
-            <input type="submit" name="updatetime" id="" >
+            <input type="submit" name="updatetime" class="btn" id="" value="Update" style="background-color: #1e128b;color: white;">
+            <Button class="btn" style="background-color: #1e128b;"><a id="breakBtn" style="text-decoration: none;color: white;">Add Break</a></Button>
         </form>
     </div>
-    <script src="../scripts/availableScript.js"></script>
+    <script>
+        var today = new Date();
+        today.setDate(today.getDate()+1);
+        console.log(today);
+        today = today.toISOString().split('T')[0];
+        document.getElementById("date").setAttribute("min",today);
+    </script>
+    <script src="../scripts/available_Script.js"></script>
     
 </body>
 </html>

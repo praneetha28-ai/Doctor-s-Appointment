@@ -10,47 +10,80 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.min.css">
 </head>
 <body>
-    <div style="margin: 20px;">
-        <form action="doctors.php" method="POST" id="edit_availability_form">
-            <label for="doc_name">Name</label>
-            <input type="text" name="doc_name" id="doc_name" readonly>
-            
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" 
-                id="nameButton" 
-                style="background-color: #40a2af;border: none;color: rgb(255, 255, 255); font-family: 'Trirong', serif;" 
-                data-bs-toggle="dropdown" aria-expanded="false" value="" >
-                Select your name 
-                </button>
-                <ul class="dropdown-menu" id="nameList" style="height: 300px;overflow: scroll;">
-                    <li>
-                        <div class="input-group mb-3">
-                            <!-- <span class="input-group-text" id="basic-addon1"><img src="search.png" alt="" style="width: 20px;height: 20px;"></span> -->
-                            <input type="text" class="form-control" onkeyup="searchID()"  id="searchforId" placeholder="Search..." aria-label="Username" aria-describedby="basic-addon1">
-                        </div>
-                    </li>
-                </ul>
+    <div class="container-fluid">
+        <div class="navbar">
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <div style="display: flex;justify-content: center;margin: 15px;">
+                        <img src="../assets/onl_doc.png" alt="" width="75px" height="75px">
+                    </div>
+                </li>
+                <li class="nav-item" style="align-self: center;">
+                    <div style="display: flex;justify-content: center;margin: 15px;color:#1e128b">
+                        <h3>DocConnect</h3>
+                    </div>
+                </li>
+            </ul>
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <div style="display: flex;justify-content: center;margin: 15px;">
+                        <h4 style="color: #1e128b;"><a href="../index.php" style="text-decoration: dashed;color: #1e128b;">Home</a></h4>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="container" style="text-align: center;width: 800px;">
+        <h4>Edit your Availability</h4>
+        <hr>
+        <form action="../php_pages/doctors.php" method="POST" id="availability_form" style="border:1px solid #1e128b;padding: 10px;border-radius: 10px;background-color: rgb(233, 233, 233);">
+            <div style="display: flex;justify-content: space-evenly;">
+                <div>
+                    <label for="doc_name">Name</label>
+                    <input required type="text" name="doc_name" id="doc_name" readonly>
+                    <select hidden name="" id="nameList">
+                        <option disabled selected >Select your name</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="doctor_id">ID</label>
+                    <input required type="text" name="doctor_id" id="doctor_id" readonly><br><br>
+                </div>
             </div><br>
-            <label for="doctor_id">ID</label>
-            <input type="text" name="doctor_id" id="doctor_id" readonly><br><br>
-            <label for="date">Select date</label>
-            <input type="date" name="date" id="date"><br><br>
-            <h4>Availability time</h4> <br>
-            <label for="av_from_time">From</label>
-            <input type="time" name="av_from_time" id="av_from_time">
-            <label for="av_to_time">To</label>
-            <input type="time" name="av_to_time" id="av_to_time"><br><br>
-            <h4>Break time</h4> <br>
-            <label for="bk_from_time">From</label>
-            <input type="time" name="bk_from_time" id="bk_from_time">
-            <label for="bk_to_time">To</label>
-            <input type="time" name="bk_to_time" id="bk_to_time"><br><br>
-            <input type="submit" name="updateEdittime" id="" >
+            <div style="text-align: center;">
+                <label for="date">Select date</label>
+                <input required readonly type="date" name="date" id="date" min=""><br><br>
+            </div>
+            <div style="display: flex;justify-content: space-evenly;">
+                <div class="availableDiv">
+                    <h4>Availability time</h4> <br>
+                    <label for="av_from_time">From</label>
+                    <input required type="time" name="av_from_time" id="av_from_time">
+                    <label for="av_to_time">To</label>
+                    <input required type="time" name="av_to_time" id="av_to_time">
+                </div>
+                <div hidden class="breaktimeDiv">
+                    <h4>Break time</h4> <br>
+                    <label for="bk_from_time">From</label>
+                    <input readonly required type="time" name="bk_from_time" id="bk_from_time">
+                    <label for="bk_to_time">To</label>
+                    <input readonly required type="time" name="bk_to_time" id="bk_to_time">
+                </div>
+                <div class="intervalDiv">
+                    <h4>Time interval</h4>
+                    <label for="timeInterval">Interval (in mins)</label><br>
+                    <input required type="number" name="timeInterval" id="timeInterval">
+                </div>
+            </div><br>
+            <input  name="updateEdittime" class="btn" id="updateEdittime" value="Update" style="background-color: #1e128b;color: white;">
         </form>
     </div>
+
     <script>
-        // Function to parse URL parameters
-        function getParameterByName(name, url) {
+        // Function to parse URL parameters             <input type="submit" name="updateEdittime" id="" >
+
+        function getParameterByName(name, url) 
+        {
             if (!url) url = window.location.href;
             name = name.replace(/[\[\]]/g, '\\$&');
             var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
@@ -69,6 +102,7 @@
         var av_to_time = getParameterByName('av_to_time');
         var bk_from_time = getParameterByName('bk_from_time');
         var bk_to_time = getParameterByName('bk_to_time');
+        var timeInterval = getParameterByName('timeInterval');
         // Do something with the arguments
         document.getElementById("doc_name").value = doc_name;
         document.getElementById("doctor_id").value = doc_id;
@@ -77,8 +111,85 @@
         document.getElementById("av_to_time").value = av_to_time;
         document.getElementById("bk_from_time").value = bk_from_time;
         document.getElementById("bk_to_time").value = bk_to_time;
+        document.getElementById("timeInterval").value = timeInterval;
 
+        // $doctor_ID = $_POST["doctor_id"];
+        // $selecteddate = $_POST["date"];
+        // $av_from_time = $_POST["av_from_time"];
+        // $av_to_time = $_POST["av_to_time"];
+        // $bk_from_time = $_POST["bk_from_time"];
+        // $bk_to_time = $_POST["bk_to_time"];
+        // $timeinterval
+        document.getElementById("updateEdittime").addEventListener("click",function(){
+            var av_from_time = document.getElementById("av_from_time").value;
+            var av_to_time = document.getElementById("av_to_time").value;
+            var bk_from_time =  document.getElementById("bk_from_time").value ;
+            var bk_to_time = document.getElementById("bk_to_time").value;
+            var timeInterval = document.getElementById("timeInterval").value;
+                var xhttp= new XMLHttpRequest();
+                xhttp.open("POST","../php_pages/doctors.php",true);
+                xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                xhttp.send("updateEdittime=true&doctor_id="+doc_id+"&date="+date+"&av_from_time="+av_from_time+"&av_to_time="+av_to_time+"&bk_from_time="+bk_from_time+"&bk_to_time="+bk_to_time+"&timeInterval="+timeInterval);
+                xhttp.onreadystatechange = function(){
+                    if(this.readyState == 4 && this.status==200)
+                    {
+                        var data = this.responseText;
+                        console.log(data);
+                        if(data=="warn")
+                        {
+                            Swal.fire({
+                                title:"Are you sure to edit your availability",
+                                text:"Appointments during break time will be cancelled",
+                                icon:"warning",
+                                showCancelButton:true,
+                                cancelButtonText: "No",
+                                confirmButtonText:"Yes, Cancel"
+                            }).then((result)=>{
+                                if(result.isConfirmed)
+                                {
+                                    var xhttp = new XMLHttpRequest();
+                                    xhttp.open("POST","../php_pages/doctors.php",true);
+                                    xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                                    xhttp.send("updateCancelApp=true&doctor_id="+doc_id+"&date="+date+"&av_from_time="+av_from_time+"&av_to_time="+av_to_time+"&bk_from_time="+bk_from_time+"&bk_to_time="+bk_to_time+"&timeInterval="+timeInterval);
+                                    xhttp.onreadystatechange = function(){
+                                        if(this.readyState == 4 && this.status==200)
+                                        {
+                                            var data = this.responseText;
+                                            console.log(data);
+                                            if(data=="success")
+                                            {
+                                                Swal.fire("Availability updated ","","success").then((result)=>{
+                                                    if(result.isConfirmed)
+                                                    {
+                                                        window.location.href = "availability.html?docid="+doc_id;
+                                                    }
+                                                    else {
+                                                        window.location.href = "availability.htmldocid="+doc_id;
+                                                    }
+                                                })
 
+                                            }
+                                        }
+                                    }
+
+                                }
+                            })
+                        }
+                    }
+                    else 
+                    {
+                        Swal.fire("Availability updated ","","success").then((result)=>{
+                                                    if(result.isConfirmed)
+                                                    {
+                                                        window.location.href = "availability.html?docid="+doc_id;
+                                                    }
+                                                    else {
+                                                        window.location.href = "availability.html?docid="+doc_id;
+                                                    }
+                                                })
+                    }
+                }
+        })
     </script>
 </body>
 </html>

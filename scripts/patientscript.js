@@ -1,8 +1,28 @@
 // document.getElementById("patientLogin").addEventListener('click',loginPatient);
 var finalSlotsList = [];
+var consultation = {0:"Not consulted",1:"Consulted",2:"Not attended",3:"Cancelled"}
 var optionsHtml = "<option value='no'>Please choose a date</option>";
 var chosenDate;
 var chosenSlot;
+const queryString = window.location.search;
+// console.log(queryString);
+const urlParams = new URLSearchParams(queryString);
+const statusCode = urlParams.get('patReg');
+// console.log(statusCode);
+if(statusCode=="f")
+    {
+        Swal.fire("Phone number already exists","","info").then((result)=>{
+            if(result.isConfirmed)
+                {
+                    window.location.href = "patient_registration.html";
+                }
+                else
+                {
+                    window.location.href = "patient_registration.html";  
+                }
+        })
+        
+    }
 function logoutUser()
 {
     sessionStorage.removeItem("pat_login");
@@ -17,41 +37,49 @@ function loginPatient()
 {
     var patientNumber = document.getElementById("patientNumber").value;
     var patientPassword = document.getElementById("patientPassword").value;
-    var xhttp = new XMLHttpRequest();
-    xhttp.open("POST","../php_pages/doctors.php",true);
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("patientLogin=true&patientNumber="+patientNumber+"&patientPassword="+patientPassword);
-    xhttp.onreadystatechange = function()
-    {
-        if(this.readyState==4 && this.status==200)
+    if(!(patientNumber && patientPassword))
+        {
+            Swal.fire("Please enter number and password");
+        }
+        else 
+        {
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST","../php_pages/doctors.php",true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("patientLogin=true&patientNumber="+patientNumber+"&patientPassword="+patientPassword);
+            xhttp.onreadystatechange = function()
             {
-                console.log("hello");
-                var data = this.responseText;
-                // {id: '1', patient_name: 'praneetha', patient_number: '9573118693', patient_password: '$2y$10$9.E0WuQnUd1.yrEcSaKUM.SNRGu/AWyHKPU/Ar2POBcgE1EP2tMtS', patient_age: '22'}
-
-                data = JSON.parse(data);
-                console.log(data);
-                if(data=="Invalid password")
+                if(this.readyState==4 && this.status==200)
                     {
-                       
-                    }
-                else 
-                { 
-                    console.log("success");
-                    sessionStorage.setItem('pat_login',true);
-                    sessionStorage.setItem('name',data["patient_name"]);
-                    sessionStorage.setItem('phn_number',data["patient_number"]);
-                    sessionStorage.setItem('age',data['patient_age']);
+                        console.log("hello");
+                        var data = this.responseText;
+                        console.log(data);
+                        if(data=="Invalid password")
+                            {
+                            Swal.fire("Invalid password","Please try again","warning");
+                            }
+                        else if (data=="Please register to login")
+                            {
+                                Swal.fire("Please register to login","","info");
+                            }
+                        else 
+                        { 
+                            data = JSON.parse(data);
+                            console.log("success");
+                            sessionStorage.setItem('pat_login',true);
+                            sessionStorage.setItem('name',data["patient_name"]);
+                            sessionStorage.setItem('phn_number',data["patient_number"]);
+                            sessionStorage.setItem('age',data['patient_age']);
 
-                    console.log(sessionStorage.getItem('pat_login'));
-                    console.log(sessionStorage.getItem('name'));
-                    console.log(sessionStorage.getItem('phn_number'));
-                    console.log(sessionStorage.getItem('age'));
-                    window.location.href = "../index.php";
-                    
-                }
+                            console.log(sessionStorage.getItem('pat_login'));
+                            console.log(sessionStorage.getItem('name'));
+                            console.log(sessionStorage.getItem('phn_number'));
+                            console.log(sessionStorage.getItem('age'));
+                            window.location.href = "../index.php";
+                        }
+                    }
             }
-    }
+        }
 }
 var parseIn = function (date_time) 
 {
@@ -86,17 +114,24 @@ function updateTimeAndDate(app_id,chosenDate,chosenSlot)
                     {
                         var data = this.responseText;
                         console.log(data);
-                        Swal.fire("Appointment updated","","success").then((result)=>
+                        if(data=="fail")
+                        {
+                            Swal.fire("You have an appointment at the same time slot","Please choose a different time slot","info");
+                        }
+                        else 
+                        {
+                            Swal.fire("Appointment updated","","success").then((result)=>
                             {
                                 if(result.isConfirmed)
-                                    {
-                                        location.reload();
-                                    }
-                                    else 
-                                    {
-                                        location.reload();
-                                    }
-                        });
+                                {
+                                    location.reload();
+                                }
+                                else 
+                                {
+                                    location.reload();
+                                }
+                            });
+                        }
                     }
             }
         }
@@ -122,8 +157,9 @@ function getAvailableSlots(doctorID,date) {
           
         var availability = data["available"];
         var booked = data["booked"];
+        var time = new Date();
         var date = document.createElement("h4");
-  
+            
         date.innerText = availability[0]["date"];
         var availableStartTime = availability[0]["available_time"].split("-")[0];
         var availableEndTime = availability[0]["available_time"].split("-")[1];
@@ -151,8 +187,23 @@ function getAvailableSlots(doctorID,date) {
           }
         }
         finalSlotsList = finalAvailableSlots;
+        var currentDate = new Date(availability[0]["date"])
+        console.log(currentDate);
         console.log(finalAvailableSlots);
-        optionsHtml = finalAvailableSlots.map(slot => `<option value="${slot}">${slot}</option>`).join('');
+        if(currentDate.getDate()==time.getDate())
+            {
+                var currentTime = time.getHours()+":"+time.getMinutes();
+                const availableSlots = finalAvailableSlots.filter(slot => {
+                    return slot > currentTime;
+                });
+                console.log(availableSlots);
+                optionsHtml = availableSlots.map(slot => `<option value="${slot}">${slot}</option>`).join('');
+            }
+            else 
+            {
+                optionsHtml = finalAvailableSlots.map(slot => `<option value="${slot}">${slot}</option>`).join('');
+
+            }
         const alertTimeElement = document.getElementById("alert_time");
                 if (alertTimeElement) {
                     alertTimeElement.innerHTML = optionsHtml;
@@ -317,7 +368,7 @@ if(document.getElementById("patientPastApplications"))
             if(this.readyState == 4 && this.status==200)
                 {
                     var data = this.responseText;
-                    // console.log(data);
+                    console.log(data);
                     data = JSON.parse(data);
                     console.log(data);
                     if(data==0)
@@ -357,13 +408,15 @@ if(document.getElementById("patientPastApplications"))
                             patientDiv.appendChild(patientName)
                             // div 
                             var div1 = document.createElement("div");
+                            div1.classList.add("row");
                             div1.style.display = "flex";
                             div1.style.justifyContent = "space-between";
                             div1.style.alignItems = "center";
                             // h5 
                             var doctorDiv = document.createElement("div");
+                            doctorDiv.classList.add("col-md-3")
                             doctorDiv.style.display = "flex";
-                            doctorDiv.style.justifyContent="space-evenly";
+                            doctorDiv.style.justifyContent="center";
                             doctorDiv.style.alignItems="center";
                             var doctorName = document.createElement("h5");
                             
@@ -376,11 +429,13 @@ if(document.getElementById("patientPastApplications"))
                             docimage.style.margin = "5px";
                             doctorDiv.appendChild(docimage);
                             doctorDiv.appendChild(doctorName);
+
+
                             var dateDiv = document.createElement("div");
                             dateDiv.style.display = "flex";
                             dateDiv.style.justifyContent="center";
                             dateDiv.style.alignSelf = "center";
-
+                            dateDiv.classList.add("col-md-3");
                             var dateImg = document.createElement("img");
                             dateImg.setAttribute("src","assets/date.png");
                             dateImg.setAttribute("width","20px");
@@ -394,9 +449,10 @@ if(document.getElementById("patientPastApplications"))
 
                             var timeDiv = document.createElement("div");
                             timeDiv.style.display = "flex";
-                            timeDiv.style.justifyContent = "space-evenly";
+                            timeDiv.style.justifyContent = "center";
                             timeDiv.style.alignItems = "center";
                             timeDiv.style.textAlign = "center";
+                            timeDiv.classList.add("col-md-3");
                             var timeImg = document.createElement("img");
                             timeImg.setAttribute("src","assets/time.png");
                             timeImg.setAttribute("width","20px");
@@ -404,15 +460,44 @@ if(document.getElementById("patientPastApplications"))
                             timeImg.setAttribute("margin","5px");
 
                             var time = document.createElement("h5");
+                            
                             time.innerText = data[i][0]["slot"];
 
                             timeDiv.appendChild(timeImg);
                             timeDiv.appendChild(time);
 
+                            var statusDiv = document.createElement("div");
+                            statusDiv.style.display = "flex";
+                            statusDiv.style.justifyContent = "center";
+                            statusDiv.style.alignItems = "center";
+                            statusDiv.style.textAlign = "center";
+                            statusDiv.classList.add("col-md-3");
+                            var statusImg = document.createElement("img");
+                            statusImg.setAttribute("src","assets/status.png");
+                            statusImg.setAttribute("width","20px");
+                            statusImg.setAttribute("height","20px");
+                            statusImg.setAttribute("margin","5px");
+
+                            var statusText = document.createElement("h5");
+                            console.log(data[i][0]["consultation"]);
+                            if (data[i][0]["consultation"]==1)
+                                {
+                                    card.style.backgroundColor = "rgb(140, 189, 160)";
+                                }
+                            else if(data[i][0]["consultation"]==2)
+                                {
+                                    card.style.backgroundColor = "rgb(237, 123, 134)";
+                                }
+                            var getStatus =consultation[data[i][0]["consultation"]];
+                            statusText.innerText = getStatus;
+
+                            statusDiv.appendChild(statusImg);
+                            statusDiv.appendChild(statusText);
                             div1.appendChild(doctorDiv);
                             div1.appendChild(dateDiv);
                             div1.appendChild(timeDiv);
-
+                            div1.appendChild(statusDiv);
+                            
                             card_body.appendChild(patientDiv);
                             card_body.appendChild(div1);
 
@@ -463,6 +548,7 @@ if(document.getElementById("patientApplications"))
                         }
                     for(var i = 0;i<data.length;i++)
                         {
+
                             var id = data[i][0]["id"];
                             var doctor_id = data[i][0]["doctor_id"];
                             var card = document.createElement("div");
@@ -528,7 +614,7 @@ if(document.getElementById("patientApplications"))
 
                             var timeDiv = document.createElement("div");
                             timeDiv.style.display = "flex";
-                            timeDiv.style.justifyContent = "space-evenly";
+                            timeDiv.style.justifyContent = "center";
                             timeDiv.style.alignItems = "center";
                             timeDiv.style.textAlign = "center";
                             var timeImg = document.createElement("img");
@@ -554,6 +640,8 @@ if(document.getElementById("patientApplications"))
                             div2.style.display = "flex";
                             div2.style.justifyContent = "space-evenly";
 
+                            var dateToday = new Date();
+                            
                             var edit = document.createElement("button")
                             edit.classList.add("btn");
                             edit.style.backgroundColor = "#1e128b"
@@ -562,6 +650,8 @@ if(document.getElementById("patientApplications"))
                             edit.setAttribute("id","edit");
                             edit.setAttribute("doctor",doctor_id);
                             edit.setAttribute("app_id",data[i][0]["id"]);
+                            
+                            
                             var deleteOptn = document.createElement("button");
                             deleteOptn.classList.add("btn");
                             deleteOptn.innerText = "Delete"
@@ -571,6 +661,23 @@ if(document.getElementById("patientApplications"))
                             deleteOptn.setAttribute("doctor",doctor_id);
                             deleteOptn.setAttribute("app_id",data[i][0]["id"]);
                             deleteOptn.setAttribute("id","delete");
+                            var selectedDate = new Date(data[i][0]["date"]);
+                            if(selectedDate.getDate() == dateToday.getDate())
+                                {
+                                    console.log("today");
+                                    
+                                    var currentTime = dateToday.getMinutes()<10?"0"+dateToday.getMinutes():dateToday.getMinutes();
+                                    console.log(data[i][0]["slot"]);
+                                    console.log(dateToday.getHours()+":"+currentTime);
+                                    console.log(data[i][0]["slot"]< dateToday.getHours()+":"+currentTime);
+                                    if(data[i][0]["slot"]< dateToday.getHours()+":"+currentTime);
+                                        {
+                                            edit.setAttribute("disabled",true) ;
+                                            edit.style.backgroundColor = "grey";
+                                            deleteOptn.setAttribute("disabled",true) ;
+                                            deleteOptn.style.backgroundColor = "grey";
+                                        }
+                                }
                             div1.appendChild(edit);
                             div1.appendChild(deleteOptn);
 

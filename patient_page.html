@@ -19,7 +19,11 @@
         .nav-link{
             color: black;
         }
-        
+        .nav-item.active .nav-link {
+            border-bottom: 2px solid #1e128b;
+            color: #1e128b;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -43,7 +47,7 @@
                         <a class="nav-link" href="index.php">Home</a>
                     </div>
                 </li>
-                <li class="nav-item" id="activeApplications">
+                <li class="nav-item active" id="activeApplications">
                     <div style="display: flex;justify-content: center;margin: 15px;">
                         <a class="nav-link" href="patient_page.html">My Appointments</a>
                     </div>

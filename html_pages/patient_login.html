@@ -42,19 +42,19 @@
         </div>
         <h3 style="color: #1e128b;">Login with Mobile Number and Password</h3>
         <hr>
-        <div style="justify-content: center;display: flex;">
+        <div style="width: 100%;justify-content: center;display: flex;">
             <div style="width: 650px;display: flex;justify-content: center;flex-direction: column;padding: 10px;border-radius: 5px;background-color: rgb(233, 233, 233);border:1px solid #1e128b;">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
+                <div class="input-group mb-3 row">
+                    <div class="input-group-prepend col-md-3"  style="display: block;">
                       <span class="input-group-text" id="basic-addon1" style="background-color: #1e128b;color: white;">+91</span>
                     </div>
-                    <input type="number" class="form-control" placeholder="Mobile Number" id="patientNumber" name="patientNumber"  aria-describedby="basic-addon1">
+                    <input autocomplete="one-time-code" minlength="10" pattern="*[6-9][0-9]\d{9}$" required type="text" class="form-control col-md-9" placeholder="Mobile Number" id="patientNumber" name="patientNumber"  aria-describedby="basic-addon1">
                 </div>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
+                <div class="input-group mb-3 row">
+                    <div class="input-group-prepend col-md-3"  style="display: block;">
                       <span class="input-group-text" id="basic-addon1" style="background-color: #1e128b;color: white;">Password</span>
                     </div>
-                    <input type="password" class="form-control" placeholder="Password" id="patientPassword" name="patientPassword"  aria-describedby="basic-addon1">
+                    <input required type="password" class="form-control col-md-9" placeholder="Password" id="patientPassword" name="patientPassword"  aria-describedby="basic-addon1">
                 </div>
                 <button class="btn"  name="patientLogin" id="patientLogin" onclick="loginPatient()" style="background-color: #1e128b;color: white;">
                     Login 

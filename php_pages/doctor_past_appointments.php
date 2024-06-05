@@ -24,7 +24,6 @@
             color: #1e128b;
             font-weight: 600;
         }
-        
     </style>
 </head>
 <body>
@@ -48,14 +47,14 @@
                         <a class="nav-link" href="../index.php">Home</a>
                     </div>
                 </li>
-                <li class="nav-item active" id="activeApplications">
-                    <div style="display: flex;justify-content: center;margin: 15px;">
-                        <a class="nav-link" href="#">My Appointments</a>
-                    </div>
-                </li>
                 <li class="nav-item" id="activeApplications">
                     <div style="display: flex;justify-content: center;margin: 15px;">
-                        <a class="nav-link" href="doctor_past_appointments.php?docId=<?php echo $_GET["docId"]; ?>">Past Appointments</a>
+                        <a class="nav-link" href="doctor_appointments.php?docId=<?php echo $_GET["docId"]; ?>">My Appointments</a>
+                    </div>
+                </li>
+                <li class="nav-item active" id="activeApplications">
+                    <div style="display: flex;justify-content: center;margin: 15px;">
+                        <a class="nav-link" href="#">Past Appointments</a>
                     </div>
                 </li>
                 <li class="nav-item" id="activeApplications">
@@ -76,13 +75,14 @@
 <?php 
         include('database.php');
         $today = date('Y-m-d');
-        $sql = "SELECT appointments.*,doctors.doctor_name FROM `appointments` JOIN doctors ON appointments.doctor_id = doctors.doctor_id  where appointments.doctor_id='{$_GET["docId"]}' and appointments.consultation=0 and appointments.date>='{$today}' ORDER BY date DESC ,slot DESC ";
+        $sql = "SELECT appointments.*,doctors.doctor_name FROM `appointments` JOIN doctors ON appointments.doctor_id = doctors.doctor_id  where appointments.doctor_id='{$_GET["docId"]}' and (appointments.consultation!=0 or appointments.date<'{$today}') ORDER BY date DESC ,slot DESC ";
         
         $run = mysqli_query($conn,$sql);
         if(mysqli_num_rows($run)>0)
         {
             $previousDate = null;
             $today = date("Y-m-d");
+            $consultCode = array(0=>"Not consulted",1=>"Consulted",2=>"Patient Unavailable",3=>"Appointment Cancelled");
             while($row = mysqli_fetch_assoc($run))
             {
                 
@@ -96,21 +96,12 @@
                 echo'                <img src="../assets/steth.png" alt="" width="25px" height="25px">';
                 echo'                <h6 class="card-subtitle mt-1 text-muted">Dentist</h6>';
                 echo'            </div>';
-
-                $appointmentDateTime = $row["date"] . ' ' . $row["slot"];
-                // echo $currentDateTime;
-               $today = date('Y-m-d H:s');
-            //    echo $today;
-                $checkDateTime = strtotime($appointmentDateTime) > strtotime($today);
-                $disabledAttribute = $checkDateTime?'disabled':"";
-                $consultbuttonColor = $checkDateTime?"grey":"green";
-                $availableButtonColot = $checkDateTime?"grey":"red";
-                echo '           <button class="btn" style="background-color: '.$consultbuttonColor.'; color: white;" onclick="markConsultComplete(' . $row["id"] . ',1)" ' . $disabledAttribute . '>Consulted</button>';
-                echo '           <button class="btn" style="background-color: '.$availableButtonColot.'; color: white;" onclick="markConsultComplete(' . $row["id"] . ',2)" ' . $disabledAttribute . '>Patient Unavailable</button>';
                 echo'        </div>';
                 echo'        <br>';
-
-                echo'        <p class="card-text">You are having an appointment with '. $row["patient_name"].' on <b>'.$row["date"].'</b> at <b>'.$row["slot"].'</b></p>';       
+                echo'     <div class ="row"> ';
+                echo'        <p class="card-text col-md-9" style="text-transform:capitalize">You had an appointment with '. $row["patient_name"].' on <b>'.$row["date"].'</b> at <b>'.$row["slot"].'</b></p>';
+                echo' <p class="card-text col-md-3">'.$consultCode[$row["consultation"]].'</p>'; 
+                echo' </div>';      
                 echo'    </div>';
                 echo '</div> ';
             }
@@ -119,16 +110,10 @@
         {
             echo "No active appointments to show";
             echo "<br>";
-            echo "<button class='btn ' onclick=pastAppointments('{$_GET['docId']}') style='background-color: #1e128b;color: white'> View Past Appointments</button>";
+            echo "<button class='btn btn-primary'> View Past appointments</button>";
         }
     ?>
     </div>
-    <script>
-        function pastAppointments(doctorId)
-        {
-            window.location.href = "doctor_past_appointments.php?docId="+doctorId;
-        }
-        </script>
     <script src="../scripts/doctorScript.js"></script>
     </body>
 </html>
